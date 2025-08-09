@@ -22,6 +22,7 @@ export class ReceiptRepository implements IReceiptRepository {
     });
     return new Receipt({
       ...created,
+      createdAt: typeof created.createdAt === 'string' ? new Date(created.createdAt) : created.createdAt,
       items: (created.items || []).map((i: any) =>
         new Item({
           id: i.id,
@@ -29,7 +30,7 @@ export class ReceiptRepository implements IReceiptRepository {
           quantity: i.quantity ?? 1,
           price: i.price ?? 0,
           receiptId: i.receiptId,
-          createdAt: i.createdAt ?? new Date(),
+          createdAt: typeof i.createdAt === 'string' ? new Date(i.createdAt) : (i.createdAt ?? new Date()),
         })
       ),
     });
@@ -43,6 +44,7 @@ export class ReceiptRepository implements IReceiptRepository {
     return found
       ? new Receipt({
           ...found,
+          createdAt: typeof found.createdAt === 'string' ? new Date(found.createdAt) : found.createdAt,
           items: (found.items || []).map((i: any) =>
             new Item({
               id: i.id,
@@ -50,7 +52,7 @@ export class ReceiptRepository implements IReceiptRepository {
               quantity: i.quantity ?? 1,
               price: i.price ?? 0,
               receiptId: i.receiptId,
-              createdAt: i.createdAt ?? new Date(),
+              createdAt: typeof i.createdAt === 'string' ? new Date(i.createdAt) : (i.createdAt ?? new Date()),
             })
           ),
         })
@@ -77,6 +79,7 @@ export class ReceiptRepository implements IReceiptRepository {
     });
     return new Receipt({
       ...updated,
+      createdAt: typeof updated.createdAt === 'string' ? new Date(updated.createdAt) : updated.createdAt,
       items: (updated.items || []).map((i: any) =>
         new Item({
           id: i.id,
@@ -84,13 +87,26 @@ export class ReceiptRepository implements IReceiptRepository {
           quantity: i.quantity ?? 1,
           price: 0,
           receiptId: i.receiptId,
-          createdAt: new Date(),
+          createdAt: typeof i.createdAt === 'string' ? new Date(i.createdAt) : (i.createdAt ?? new Date()),
         })
       ),
     });
   }
   async delete(id: string): Promise<void> {
-    await prisma.receipt.delete({ where: { id } });
+    try {
+      // First delete all items related to this receipt
+      await prisma.item.deleteMany({ where: { receiptId: id } });
+      // Then delete the receipt
+      await prisma.receipt.delete({ where: { id } });
+    } catch (error: any) {
+      if (error.code === 'P2003' || error.message?.includes('Foreign key constraint')) {
+        // Prisma error code for foreign key constraint violation
+        console.error('Failed to delete receipt due to foreign key constraint:', error);
+        throw new Error('Cannot delete receipt: related items or other dependencies exist.');
+      }
+      // Rethrow other errors
+      throw error;
+    }
   }
 
   async findAll(): Promise<Receipt[]> {
@@ -98,6 +114,7 @@ export class ReceiptRepository implements IReceiptRepository {
     return receipts.map((r: any) =>
       new Receipt({
         ...r,
+        createdAt: typeof r.createdAt === 'string' ? new Date(r.createdAt) : r.createdAt,
         items: (r.items || []).map((i: any) =>
           new Item({
             id: i.id,
@@ -105,7 +122,7 @@ export class ReceiptRepository implements IReceiptRepository {
             quantity: i.quantity ?? 1,
             price: i.price ?? 0,
             receiptId: i.receiptId,
-            createdAt: i.createdAt ?? new Date(),
+            createdAt: typeof i.createdAt === 'string' ? new Date(i.createdAt) : (i.createdAt ?? new Date()),
           })
         ),
       })
@@ -125,6 +142,7 @@ export class ReceiptRepository implements IReceiptRepository {
     return receipts.map((r: any) =>
       new Receipt({
         ...r,
+        createdAt: typeof r.createdAt === 'string' ? new Date(r.createdAt) : r.createdAt,
         items: (r.items || []).map((i: any) =>
           new Item({
             id: i.id,
@@ -132,7 +150,7 @@ export class ReceiptRepository implements IReceiptRepository {
             quantity: i.quantity ?? 1,
             price: i.price ?? 0,
             receiptId: i.receiptId,
-            createdAt: i.createdAt ?? new Date(),
+            createdAt: typeof i.createdAt === 'string' ? new Date(i.createdAt) : (i.createdAt ?? new Date()),
           })
         ),
       })

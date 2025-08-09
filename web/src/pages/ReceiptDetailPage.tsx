@@ -1,4 +1,13 @@
 import { useState } from 'react'
+
+// Utility to handle ISO strings, stringified timestamps, and Date objects
+function parseDate(dateValue: string | number | Date | undefined | null): Date {
+  if (!dateValue) return new Date('');
+  if (typeof dateValue === 'string' && /^\d+$/.test(dateValue)) {
+    return new Date(Number(dateValue));
+  }
+  return new Date(dateValue);
+}
 import { useParams, useNavigate } from 'react-router-dom'
 import { useQuery, useMutation } from '@apollo/client'
 import toast from 'react-hot-toast'
@@ -264,7 +273,9 @@ const ReceiptDetailPage = () => {
                   />
                 ) : (
                   <p className="text-lg text-gray-900">
-                    {new Date(currentReceipt.purchaseDate).toLocaleDateString()}
+                    {currentReceipt.purchaseDate && !isNaN(parseDate(currentReceipt.purchaseDate).getTime())
+                      ? parseDate(currentReceipt.purchaseDate).toLocaleDateString()
+                      : 'N/A'}
                   </p>
                 )}
               </div>
@@ -301,7 +312,9 @@ const ReceiptDetailPage = () => {
                   Created
                 </label>
                 <p className="text-sm text-gray-600">
-                  {new Date(receipt.createdAt).toLocaleString()}
+                  {receipt.createdAt && !isNaN(parseDate(receipt.createdAt).getTime())
+                    ? parseDate(receipt.createdAt).toLocaleString()
+                    : 'N/A'}
                 </p>
               </div>
             </div>
