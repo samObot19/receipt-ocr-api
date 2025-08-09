@@ -1,0 +1,29 @@
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Receipt {
+  id           String   @id @default(uuid())
+  storeName    String
+  purchaseDate DateTime
+  totalAmount  Float
+  items        Item[]
+  imageUrl     String
+  createdAt    DateTime @default(now())
+}
+
+model Item {
+  id        String   @id @default(uuid())
+  name      String
+  quantity  Int?
+  price     Float
+  createdAt DateTime @default(now())
+  receiptId String
+  receipt   Receipt  @relation(fields: [receiptId], references: [id])
+}

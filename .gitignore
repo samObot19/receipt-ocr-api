@@ -1,0 +1,121 @@
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment
+.env
+.env.*
+
+# Build output
+dist/
+build/
+*.tsbuildinfo
+
+# TypeScript
+*.d.ts.map
+*.js
+*.js.map
+
+# Prisma
+prisma/dev.db
+prisma/dev.db-journal
+
+# Logs
+logs/
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+
+# Uploads and generated files
+uploads/
+
+# OCR language data files
+eng.traineddata
+*.traineddata
+
+# Compiled TypeScript declaration files
+*.d.ts
+*.d.ts.map
+
+# Map and build artifacts in migrations
+src/infrastructure/database/prisma/migrations/**/migration.sql-journal
+
+# VS Code workspace settings
+.history/
+.vscode-test/
+
+# Mac system files
+.AppleDouble
+.LSOverride
+
+# Windows system files
+ehthumbs.db
+Desktop.ini
+
+# Test snapshots
+**/__snapshots__/
+**/*.snap
+
+# Coverage reports
+web/coverage/
+
+# Miscellaneous
+*.sublime-workspace
+*.sublime-project
+*.tmp
+*.temp
+*.bak
+*.orig
+*.rej
+*.swp
+*.swo
+*.swn
+*.tmp
+*.log.*
+*.tgz
+*.gz
+*.zip
+*.tar
+*.7z
+*.rar
+
+# Test coverage
+coverage/
+
+# Frontend build
+web/node_modules/
+web/dist/
+web/.next/
+web/.cache/
+
+# Misc
+*.local
+
+# Ignore compiled output in src/config
+src/config/*.js
+src/config/*.js.map
+
+# Ignore compiled output in src/domain
+src/domain/**/*.js
+src/domain/**/*.js.map
+
+# Ignore compiled output in src/infrastructure
+src/infrastructure/**/*.js
+src/infrastructure/**/*.js.map
+
+# Ignore compiled output in src/usecases
+src/usecases/**/*.js
+src/usecases/**/*.js.map
+
+# Ignore compiled output in src/utils
+src/utils/**/*.js
+src/utils/**/*.js.map
